@@ -206,11 +206,21 @@ module.exports.addComment = (req, res) => {
 module.exports.getMyComments = (req, res) => {
   Blog.find({ 'comments.userId': req.user.id })
     .then((blogs) => {
-      if (!blogs.length) {
-        return res.status(200).send([]);
-      }
+      const myComments = blogs.flatMap((blog) =>
+        blog.comments
+          .filter((comment) => {
+            return comment.userId && comment.userId.toString() === req.user.id;
+          })
+          .map((comment) => ({
+            blogId: blog._id,
+            blogTitle: blog.title,
+            commentId: comment._id,
+            comment: comment.comment,
+            userName: comment.userName,
+          }))
+      );
 
-      return res.status(200).send(blogs);
+      return res.status(200).send(myComments);
     })
     .catch((error) => errorHandler(error, req, res));
 };
