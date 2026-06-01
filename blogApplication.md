@@ -3,7 +3,7 @@
 ## Resources
 
 - App Base Url
-    - https://movieapp-api-lms1.onrender.com
+    - https://blogapplicationapi-guimmayen.onrender.com
 
 - Admin User
 	- userName: "admin"
@@ -115,6 +115,10 @@
 		"comment": "sample comment"
 	}
 ```
+#### [GET] - "/blogs/getMyComments"
+
+- No Request Body
+
 #### [PATCH] - "/blogs/:blogId/updateComment/:commentId"
 
 - Sample Request Body
