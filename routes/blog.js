@@ -11,6 +11,9 @@ router.get("/getAllBlogs", blogController.getAllBlogs);
 // GET /blogs/getMyBlogs
 router.get("/getMyBlogs", verify, blogController.getMyBlogs);
 
+// GET /blogs/getMyComments
+router.get("/getMyComments", verify, blogController.getMyComments);
+
 // GET /blogs/:blogId
 router.get("/:blogId", blogController.getBlog);
 
@@ -32,8 +35,7 @@ router.get('/:blogId', blogController.getBlogById);
 // PATCH /blogs/:blogId/addComment
 router.patch("/:blogId/addComment", verify, blogController.addComment);
 
-// GET /blogs/getMyComments
-router.get("/getMyComments", verify, blogController.getMyComments);
+
 
 // PATCH /blogs/:blogId/updateComment/:commentId
 router.patch("/:blogId/updateComment/:commentId", verify, blogController.updateComment);

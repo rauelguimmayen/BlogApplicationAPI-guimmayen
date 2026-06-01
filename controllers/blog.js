@@ -203,26 +203,38 @@ module.exports.addComment = (req, res) => {
 };
 
 // GET /blogs/getMyComments
-module.exports.getMyComments = (req, res) => {
-  Blog.find({ 'comments.userId': req.user.id })
-    .then((blogs) => {
-      const myComments = blogs.flatMap((blog) =>
-        blog.comments
-          .filter((comment) => {
-            return comment.userId && comment.userId.toString() === req.user.id;
-          })
-          .map((comment) => ({
-            blogId: blog._id,
-            blogTitle: blog.title,
-            commentId: comment._id,
-            comment: comment.comment,
-            userName: comment.userName,
-          }))
-      );
+module.exports.getMyComments = async (req, res) => {
+  try {
+    const userId = req.user?.id;
 
-      return res.status(200).send(myComments);
-    })
-    .catch((error) => errorHandler(error, req, res));
+    if (!userId) {
+      return res.status(401).send({ message: 'Unauthorized' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).send({ message: 'Invalid user ID' });
+    }
+
+    const blogs = await Blog.find({
+      'comments.userId': userId,
+    }).lean();
+
+    const myComments = blogs.flatMap((blog) =>
+      (blog.comments || [])
+        .filter((comment) => String(comment.userId || '') === String(userId))
+        .map((comment) => ({
+          blogId: blog._id,
+          blogTitle: blog.title,
+          commentId: comment._id,
+          comment: comment.comment,
+          userName: comment.userName,
+        }))
+    );
+
+    return res.status(200).send(myComments);
+  } catch (error) {
+    return errorHandler(error, req, res);
+  }
 };
 
 // Authenticated user can update their comment to a blog
