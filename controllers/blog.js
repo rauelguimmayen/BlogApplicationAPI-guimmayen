@@ -169,6 +169,26 @@ module.exports.addComment = (req, res) => {
     .catch(error => errorHandler(error, req, res));
 };
 
+// GET /blogs/getMyComments
+module.exports.getMyComments = (req, res) => {
+    Blog.find({ 'comments.userId': req.user.id })
+    .then(blogs => {
+        if (!blogs.length) {
+            return res.status(404).send({ message: 'No comments found' });
+        }
+
+        // Extract only the comments that belong to the user
+        const myComments = blogs.flatMap(blog =>
+            blog.comments.filter(comment => 
+                comment.userId.toString() === req.user.id
+            )
+        );
+
+        return res.status(200).send(myComments);
+    })
+    .catch(error => errorHandler(error, req, res));
+};
+
 // Authenticated user can update their comment to a blog
 
 module.exports.updateComment = (req, res) => {
