@@ -177,11 +177,17 @@ module.exports.getMyComments = (req, res) => {
             return res.status(404).send({ message: 'No comments found' });
         }
 
-        // Extract only the comments that belong to the user
+        // Extract only the comments that belong to the user with blogId and title
         const myComments = blogs.flatMap(blog =>
-            blog.comments.filter(comment => 
-                comment.userId.toString() === req.user.id
-            )
+            blog.comments
+            .filter(comment => comment.userId.toString() === req.user.id)
+            .map(comment => ({
+                blogId: blog._id,
+                blogTitle: blog.title,
+                commentId: comment._id,
+                comment: comment.comment,
+                userName: comment.userName
+            }))
         );
 
         return res.status(200).send(myComments);
