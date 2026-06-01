@@ -26,6 +26,9 @@ router.delete("/deleteBlog/:blogId", verify, verifyAdmin, blogController.deleteB
 // PATCH /blogs/:blogId/addComment
 router.patch("/:blogId/addComment", verify, blogController.addComment);
 
+// GET /blogs/getMyComments
+router.get("/:blogId/getMyComments", verify, blogController.getMyComments);
+
 // PATCH /blogs/:blogId/updateComment/:commentId
 router.patch("/:blogId/updateComment/:commentId", verify, blogController.updateComment);
 
