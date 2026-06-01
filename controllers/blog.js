@@ -32,11 +32,15 @@ module.exports.createBlog = (req, res) => {
 // User: getMyBlogs retrieve author's blog
 
 module.exports.getMyBlogs = (req, res) => {
-  Blog.find({ userId: req.user.id })
-    .then((blogs) => {
-      res.status(200).send({ blogs });
+    Blog.find({ 'author.id': req.user.id })
+    .then(blogs => {
+        if (blogs.length > 0) {
+            return res.status(200).send(blogs);
+        } else {
+            return res.status(404).send({ message: 'No blogs found' });
+        }
     })
-    .catch((error) => errorHandler(error, req, res));
+    .catch(error => errorHandler(error, req, res));
 };
 
 // User: anyone who has access to the website
