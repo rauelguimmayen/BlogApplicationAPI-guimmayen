@@ -29,6 +29,20 @@ module.exports.createBlog = (req, res) => {
     .catch((error) => errorHandler(error, req, res));
 };
 
+// View specific Blog
+module.exports.getBlog = (req, res) => {
+    return Blog.findById(req.params.blogId)
+    .then(blog => {
+        if(blog) {
+            return res.status(200).send(blog);
+        } else {
+            return res.status(404).send({ error: "Blog not found" });
+        }
+    })
+    .catch(err => res.status(500).send({ error: err.message }));
+};
+
+
 // User: getMyBlogs retrieve author's blog
 
 module.exports.getMyBlogs = (req, res) => {

@@ -11,6 +11,9 @@ router.get("/getAllBlogs", blogController.getAllBlogs);
 // GET /blogs/getMyBlogs
 router.get("/getMyBlogs", verify, blogController.getMyBlogs);
 
+// GET /blogs/:blogId
+router.get("/:blogId", blogController.getBlog);
+
 // POST /blogs/createBlog
 router.post("/createBlog", verify, blogController.createBlog);
 
