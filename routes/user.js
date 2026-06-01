@@ -17,4 +17,7 @@ router.get("/details", verify, userController.getProfile);
 // PUT /users/profile
 router.put('/profile', verify, userController.updateProfile);
 
+// PATCH /users/update-password
+router.patch("/update-password", verify, userController.updatePassword);
+
 module.exports = router;

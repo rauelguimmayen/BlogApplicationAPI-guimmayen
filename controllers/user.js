@@ -94,3 +94,47 @@ module.exports.updateProfile = async (req, res) => {
     .then(updatedUser => res.status(200).send(updatedUser))
     .catch(error => errorHandler(error, req, res)); 
 }
+
+module.exports.updatePassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+
+    // Ensure new password is present
+    if (!newPassword) {
+      return res.status(400).json({
+        error: { message: "New password is required"}
+      });
+    }
+
+    // Enforce minimum password length
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        error: { message: "New password must be at least 8 characters long"}
+      });
+    }
+
+    // Get user id from the Bearer token
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        error: { message: "User not found"}
+      });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Password reset successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: { message: err.message }
+    });
+  }
+
+};
