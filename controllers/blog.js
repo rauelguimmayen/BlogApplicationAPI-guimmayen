@@ -154,6 +154,25 @@ module.exports.deleteBlog = (req, res) => {
 };
 
 
+module.exports.getBlogById = async (req, res) => {
+  try {
+    const { blogId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(blogId)) {
+      return res.status(400).send({ message: 'Invalid blog ID' });
+    }
+
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      return res.status(404).send({ message: 'Blog not found' });
+    }
+
+    return res.status(200).send({ blog });
+  } catch (error) {
+    return errorHandler(error, req, res);
+  }
+};
 
 // Authenticated user can addComment to a blog
 
