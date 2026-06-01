@@ -72,8 +72,9 @@ module.exports.updateMyBlog = (req, res) => {
             return res.status(403).send({ message: 'Unauthorized: You can only update your own blogs' });
         }
 
-        blog.title = req.body.title;
-        blog.content = req.body.content;
+        // Only update fields that are provided
+        if (req.body.title) blog.title = req.body.title;
+        if (req.body.content) blog.content = req.body.content;
 
         return blog.save();
     })
