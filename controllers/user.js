@@ -88,9 +88,9 @@ module.exports.updateProfile = async (req, res) => {
 
     const userId = req.user.id;
 
-    const { firstName, lastName } = req.body;
+    const { firstName, lastName, email } = req.body;
 
-    User.findByIdAndUpdate(userId, { firstName, lastName }, { new: true })
+    User.findByIdAndUpdate(userId, { firstName, lastName, email }, { new: true })
     .then(updatedUser => res.status(200).send(updatedUser))
     .catch(error => errorHandler(error, req, res)); 
 }
