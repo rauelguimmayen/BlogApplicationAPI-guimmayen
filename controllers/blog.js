@@ -14,34 +14,26 @@ module.exports.createBlog = (req, res) => {
     return res.status(400).send({ error: "All fields are required" });
   }
 
+  const firstName = req.user.firstName || '';
+  const lastName = req.user.lastName || '';
+  const fullName = (firstName || lastName)
+    ? `${firstName} ${lastName}`.trim()
+    : req.user.userName;
+
   Blog.create({
-    author: {
-      id: req.user.id,
-      userName: req.user.userName,
-      fullName: `${req.user.firstName} ${req.user.lastName}`
-    },
-    title,
-    content
+      author: {
+          id: req.user.id,
+          userName: req.user.userName,
+          fullName
+      },
+      title,
+      content
   })
     .then((newBlog) => {
       res.status(201).send(newBlog);
     })
     .catch((error) => errorHandler(error, req, res));
 };
-
-// View specific Blog
-module.exports.getBlog = (req, res) => {
-    return Blog.findById(req.params.blogId)
-    .then(blog => {
-        if(blog) {
-            return res.status(200).send(blog);
-        } else {
-            return res.status(404).send({ error: "Blog not found" });
-        }
-    })
-    .catch(err => res.status(500).send({ error: err.message }));
-};
-
 
 // User: getMyBlogs retrieve author's blog
 
@@ -74,6 +66,19 @@ module.exports.getAllBlogs = (req, res) => {
         }
     })
     .catch(error => errorHandler(error, req, res));
+};
+
+// View specific Blog
+module.exports.getBlog = (req, res) => {
+    return Blog.findById(req.params.blogId)
+    .then(blog => {
+        if(blog) {
+            return res.status(200).send(blog);
+        } else {
+            return res.status(404).send({ error: "Blog not found" });
+        }
+    })
+    .catch(err => res.status(500).send({ error: err.message }));
 };
 
 // User: updateMyBlog add update by blog author
@@ -152,7 +157,6 @@ module.exports.deleteBlog = (req, res) => {
     })
     .catch(error => errorHandler(error, req, res));
 };
-
 
 module.exports.getBlogById = async (req, res) => {
   try {
@@ -236,7 +240,6 @@ module.exports.getMyComments = async (req, res) => {
     return errorHandler(error, req, res);
   }
 };
-
 // Authenticated user can update their comment to a blog
 
 module.exports.updateComment = (req, res) => {
